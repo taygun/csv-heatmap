@@ -8,10 +8,10 @@
 			font-family: 'Raleway', sans-serif;
 			z-index:1;
     }
-  
+
 		#draggable {
-			z-index:100; 
-			background-color: rgba(200,200,255,.7); 
+			z-index:100;
+			background-color: rgba(200,200,255,.7);
 			width: 250px;
 			padding: 20px;
 			position:absolute;
@@ -36,13 +36,13 @@
 			margin-bottom: 10px;
 		}
 
-		#radius-slider .ui-slider-handle, 
+		#radius-slider .ui-slider-handle,
 		#opacity-slider .ui-slider-handle,
 		#max-slider .ui-slider-handle {
 			cursor:pointer;
 		}
   </style>
-	
+
 	<script src="./papaparse.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization"></script>
 
@@ -61,7 +61,7 @@
 
 		function handleFileSelect(evt) {
 			var file = evt.target.files[0];
-			
+
 			Papa.parse(file, {
 				header: true,
 				dynamicTyping: true,
@@ -78,7 +78,7 @@
 
 						for(idx in results["data"]) {
 							var row = results["data"][idx];
-							
+
 							max = Math.max(max, row["weight"]);
 
 							csv.push({
@@ -87,59 +87,59 @@
 							});
 						}
 
-						$("#max-label").html("max: "+numberWithCommas(max));
-						$("#max-slider").slider("option","max",max);
-						$("#max-slider").slider("option","value",max);
+						$("#max-label").html("max:");
+						$("#max-slider").slider("option","max",1200);
+						$("#max-slider").slider("option","value",1200);
 					}
-					
+
 					console.log(results);
-										
+
 					loadHeatmap(csv);
 				}
 			});
 		}
-		
+
 		function initialize() {
 		  var mapOptions = {
-			zoom: 6,
-			center: new google.maps.LatLng(52, 11),
-			mapTypeId: google.maps.MapTypeId.SATELLITE
+			zoom: 16,
+			center: new google.maps.LatLng(51.9833597, 5.9102887),
+			mapTypeId: google.maps.MapTypeId.TERRAIN
 		  };
 
 		  map = new google.maps.Map(document.getElementById('map-canvas'),
 			  mapOptions);
 		}
-		
+
 		function loadHeatmap(csv) {
 			var pointArray = new google.maps.MVCArray(csv);
 
 			if(heatmap) heatmap.setMap(null);
-			
+
 			heatmap = new google.maps.visualization.HeatmapLayer({
 				data: pointArray,
 				radius: $("#radius-slider").slider("value"),
 				opacity: $("#opacity-slider").slider("value")
 			});
-			
+
 			heatmap.setMap(map);
 		}
-		
+
 		$(document).ready(function(){
 			$("#csv-file").change(handleFileSelect);
-			
+
 			google.maps.event.addDomListener(window, 'load', initialize);
-			
+
 			$(function() {
 				$( "#draggable" ).draggable();
 			});
-			
+
 			$(function() {
 				$( "#radius-slider" ).slider({
 					orientation: "horizontal",
 					range: "min",
 					min: 1,
-					max: 50,
-					value: 20,
+					max: 100,
+					value: 100,
 					slide: function(event, ui) {
 						$("#radius-label").html("radius: " + ui.value);
 						if(heatmap == null) return;
@@ -152,7 +152,7 @@
 					range: "min",
 					min: 0,
 					max: 100,
-					value: 50,
+					value: 90,
 					slide: function(event, ui) {
 						$("#opacity-label").html("opacity: " + ui.value/100);
 						if(heatmap == null) return;
